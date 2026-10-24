@@ -526,7 +526,7 @@ body.password-locked #birthday-gate {
 
 <section>
  <div class="end-card"><div class="big-heart">💗</div><h2>สุขสันต์วันเกิดอีกครั้งนะ</h2><p>ขอให้จักรวาลใจดีกับแมวน้อย MariBel เสมอ</p>
-<button class="btn primary" onclick="playCuteFirework();celebrate();toast('ส่งความสุขให้แมวน้อยเรียบร้อยแล้ว 🎉')">จุดพลุเลยดี ✨</button>
+<button class="btn primary" onclick="playCuteFirework();celebrate();toast('ส่งความสุขให้แมวน้อยเรียบร้อยแล้ว 🎉')">จุดพลุเลยดี ✨showBirthdayWin();</button>
 
 </section>
 <footer>made with MariWathan & many memories · ♡<br></footer>
@@ -758,5 +758,112 @@ document.querySelectorAll("#video-memories .vm-card").forEach(card => {
   window.playCuteFirework = playCuteFirework;
 })();
 </script>
+ 
+<style>
+/* ฉากฉลองวันเกิด */
+#birthdayWin {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: radial-gradient(
+    circle, rgba(255,120,190,.25), rgba(25,5,45,.72)
+  );
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+
+#birthdayWin.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+#birthdayWin h1 {
+  margin: 0 12px;
+  color: #fff4a8;
+  font-size: clamp(38px, 10vw, 100px);
+  font-weight: 1000;
+  line-height: 1.15;
+  text-shadow:
+    0 0 10px #ff70c8,
+    0 0 25px #ff70c8,
+    0 0 45px #ffd7f2;
+  animation: birthdayBounce .7s ease-in-out infinite alternate;
+}
+
+#birthdayWin p {
+  color: white;
+  font-size: clamp(18px, 4vw, 30px);
+  text-shadow: 0 0 12px #ff80c8;
+  margin: 20px 12px 0;
+}
+
+@keyframes birthdayBounce {
+  from { transform: scale(.88) rotate(-2deg); }
+  to   { transform: scale(1.08) rotate(2deg); }
+}
+</style>
+
+<div id="birthdayWin">
+  <h1>🎉 HAPPY<br/>BIRTHDAY! 🎂</h1>
+  <p>เย้ ๆ ๆ! 🏆💖<br/>สุขสันต์วันเกิดนะ แมวน้อย MariBel 🐱💕</p>
+</div>
+
+<script>
+function playCuteVictorySound() {
+  try {
+    const audio = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [
+      [523.25, 0], [659.25, 0.13],
+      [783.99, 0.26], [1046.5, 0.43],
+      [783.99, 0.62], [1046.5, 0.78],
+      [1318.5, 1.0]
+    ];
+
+    notes.forEach(([freq, delay], i) => {
+      const osc = audio.createOscillator();
+      const gain = audio.createGain();
+
+      osc.type = i === notes.length - 1 ? "triangle" : "sine";
+      osc.frequency.setValueAtTime(freq, audio.currentTime + delay);
+      gain.gain.setValueAtTime(0.0001, audio.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(
+        0.18, audio.currentTime + delay + 0.025
+      );
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001, audio.currentTime + delay + 0.35
+      );
+
+      osc.connect(gain);
+      gain.connect(audio.destination);
+      osc.start(audio.currentTime + delay);
+      osc.stop(audio.currentTime + delay + 0.36);
+    });
+
+    setTimeout(() => audio.close(), 2500);
+  } catch (e) {
+    console.log("เล่นเสียงไม่ได้", e);
+  }
+}
+
+function showBirthdayWin() {
+  const scene = document.getElementById("birthdayWin");
+  scene.classList.add("show");
+  playCuteVictorySound();
+
+  clearTimeout(window.birthdayWinTimer);
+  window.birthdayWinTimer = setTimeout(() => {
+    scene.classList.remove("show");
+  }, 5500);
+}
+</script>
+</body>
+
 </body>
 </html>
