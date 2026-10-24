@@ -105,6 +105,31 @@ footer{text-align:center;color:var(--muted);font-size:.84rem;padding:30px 0 55px
  section{padding:52px 0}.grid3,.gift-grid{grid-template-columns:1fr}.memory-card{min-height:170px}.game-layout{grid-template-columns:1fr}.timeline:before{left:22px}.timeline-item{grid-template-columns:44px 1fr;gap:12px;margin:16px 0}.timeline-item:nth-child(n) .time-icon{grid-column:1;grid-row:1;justify-self:center;width:43px;height:43px}.timeline-item:nth-child(n) .time-card{grid-column:2;grid-row:1;text-align:left}.gift{min-height:185px}.gift p{min-height:0}.photo-slot{min-height:120px;padding:7px;font-size:.8rem}.photos{gap:8px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* เบลอหน้าเว็บด้านหลังตอนฉลองวันเกิด */
+body.birthday-blur > *:not(#birthdayWin) {
+  filter: blur(7px);
+  transition: filter 0.4s ease;
+}
+
+/* ฉากโปร่งแสงคลุมทั้งหน้า */
+#birthdayWin {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  isolation: isolate;
+  background: rgba(45, 15, 55, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ให้เนื้อหาวันเกิดอยู่ด้านหน้าชัดเจน */
+#birthdayWin .win-content {
+  position: relative;
+  z-index: 2;
+  filter: none;
+}
+
 </style>
 
 <style>
@@ -854,7 +879,10 @@ function playCuteVictorySound() {
 
 function showBirthdayWin() {
   const scene = document.getElementById("birthdayWin");
-  scene.classList.add("show");
+  document.body.classList.add("birthday-blur");
+scene.classList.add("show");
+ scene.classList.remove("show");
+document.body.classList.remove("birthday-blur");
   playCuteVictorySound();
 
   clearTimeout(window.birthdayWinTimer);
